@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
-* Студент: [Ольга Гавришина](https://up.htmlacademy.ru/javascript/19/user/522937).
-* Наставник: [Артём Рудов].
+* Студент: [Ольга Гавришина](https://htmlacademy.ru/profile/id522937).
+* Наставник: [Артём Рудов](https://htmlacademy.ru/profile/artrudov).
 
 ---
 
