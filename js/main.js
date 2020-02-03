@@ -7,9 +7,21 @@ var PIN_HEIGHT = 70;
 var COUNT_OFFERS = 8;
 var MAX_ROOMS = 4;
 var MAX_GUESTS = 10;
+var MAX_X_Y = 600;
+var MAX_PRICE = 5000;
 
 var arrTypes = ['palace', 'flat', 'house', 'bungalo'];
+var HouseType = {
+  PALACE: 'Дворец',
+  BUNGALO: 'Бунгало',
+  FLAT: 'Квартира',
+  HOUSE: 'Дом'
+};
 var arrCheck = ['12:00', '13:00', '14:00'];
+var photoStyle = {
+  width: 45,
+  height: 40
+};
 var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
 var mapFilters = document.querySelector('.map__filters-container');
@@ -20,7 +32,7 @@ var cardTemplate = document.querySelector('#card')
     .content
     .querySelector('.map__card');
 var fragment = document.createDocumentFragment();
-var fragment2 = document.createDocumentFragment();
+var OfferCard = document.createDocumentFragment();
 
 var getRandomIndex = function (maxIndex) {
   return Math.floor(Math.random() * maxIndex);
@@ -34,8 +46,8 @@ var getArrayOffers = function () {
           avatar: 'img/avatars/user0' + (i + 1) + '.png'},
         offer: {
           title: 'Title' + i,
-          address: getRandomIndex(600) + ', ' + getRandomIndex(600),
-          price: getRandomIndex(5000),
+          address: getRandomIndex(MAX_X_Y) + ', ' + getRandomIndex(MAX_X_Y),
+          price: getRandomIndex(MAX_PRICE),
           type: arrTypes[getRandomIndex(arrTypes.length)],
           rooms: getRandomIndex(MAX_ROOMS),
           guests: getRandomIndex(MAX_GUESTS),
@@ -51,83 +63,65 @@ var getArrayOffers = function () {
         }
     );
   }
+
   return arrOffers;
 };
 
 var renderPin = function (pin) {
   var pinElement = pinTemplate.cloneNode(true);
   var pinImg = pinElement.querySelector('img');
+
   pinElement.style.left = (pin.location.x + PIN_WIDTH / 2) + 'px';
   pinElement.style.top = (pin.location.y + PIN_HEIGHT) + 'px';
   pinImg.src = pin.author.avatar;
   pinImg.alt = pin.offer.title;
+
   return pinElement;
 };
 
-var renderCard = function (offer) {
+var getFeature = function (list, features) {
+  while (list.firstChild) {
+    list.removeChild(list.firstChild);
+  }
+
+  features.forEach(function (feature) {
+    var featureItem = document.createElement('li');
+
+    featureItem.classList.add('popup__feature');
+    featureItem.classList.add('popup__feature--' + feature);
+    list.appendChild(featureItem);
+  });
+};
+
+var getPhoto = function (list, image) {
+  var photo = document.createElement('img');
+
+  photo.classList.add('popup__photo');
+  photo.src = image;
+  photo.width = photoStyle.width;
+  photo.height = photoStyle.height;
+  list.appendChild(photo);
+};
+
+var renderCard = function (card) {
   var cardElement = cardTemplate.cloneNode(true);
-  var type;
   var listPhotos = cardElement.querySelector('.popup__photos');
   var listFeatures = cardElement.querySelector('.popup__features');
-  cardElement.querySelector('.popup__title').textContent = offer.offer.title;
-  cardElement.querySelector('.popup__text--address').textContent = offer.offer.address;
-  cardElement.querySelector('.popup__text--price').textContent = offer.offer.price + '₽/ночь';
-  switch (offer.offer.type) {
-    case 'flat':
-      type = 'Квартира';
-      break;
-    case 'bungalo':
-      type = 'Бунгало';
-      break;
-    case 'house':
-      type = 'Дом';
-      break;
-    case 'palace':
-      type = 'Дворец';
-      break;
-  }
-  cardElement.querySelector('.popup__type').textContent = type;
-  cardElement.querySelector('.popup__text--capacity').textContent = offer.offer.rooms + ' комнаты для ' + offer.offer.guests + ' гостей';
-  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.offer.checkin + ', выезд до ' + offer.offer.checkout;
-  while (listFeatures.firstChild) {
-    listFeatures.removeChild(listFeatures.firstChild);
-  }
-  offer.offer.features.forEach(function (vol) {
-    var feature = document.createElement('li');
-    feature.classList.add('popup__feature');
-    switch (vol) {
-      case 'wifi':
-        feature.classList.add('popup__feature--wifi');
-        break;
-      case 'dishwasher':
-        feature.classList.add('popup__feature--dishwasher');
-        break;
-      case 'parking':
-        feature.classList.add('popup__feature--parking');
-        break;
-      case 'washer':
-        feature.classList.add('popup__feature--washer');
-        break;
-      case 'elevator':
-        feature.classList.add('popup__feature--elevator');
-        break;
-      case 'conditioner':
-        feature.classList.add('popup__feature--conditioner');
-        break;
-    }
-    listFeatures.appendChild(feature);
-  });
-  cardElement.querySelector('.popup__description').textContent = offer.offer.description;
+
+  cardElement.querySelector('.popup__title').textContent = card.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
+  cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
+  cardElement.querySelector('.popup__type').textContent = HouseType[card.offer.type.toUpperCase()];
+  cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+  getFeature(listFeatures, card.offer.features);
+  cardElement.querySelector('.popup__description').textContent = card.offer.description;
   listPhotos.querySelector('.popup__photo').remove();
-  offer.offer.photos.forEach(function (img) {
-    var photo = document.createElement('img');
-    photo.classList.add('popup__photo');
-    photo.src = img;
-    photo.width = 45;
-    photo.height = 40;
-    listPhotos.appendChild(photo);
+  card.offer.photos.forEach(function (photo) {
+    getPhoto(listPhotos, photo);
   });
-  cardElement.querySelector('.popup__avatar').style.src = offer.author.avatar;
+  cardElement.querySelector('.popup__avatar').style.src = card.author.avatar;
+
   return cardElement;
 };
 
@@ -135,12 +129,12 @@ map.classList.remove('map--faded');
 
 var offers = getArrayOffers();
 
-offers.forEach(function (pin) {
-  fragment.appendChild(renderPin(pin));
+offers.forEach(function (offer) {
+  fragment.appendChild(renderPin(offer));
 });
 
 mapPins.appendChild(fragment);
 
-fragment2.append(renderCard(offers[0]));
+OfferCard.append(renderCard(offers[0]));
 
-mapFilters.before(fragment2);
+mapFilters.before(OfferCard);
