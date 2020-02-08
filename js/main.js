@@ -24,7 +24,9 @@ var photoStyle = {
 };
 var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
-var mapFilters = document.querySelector('.map__filters-container');
+var mainMapPin = document.querySelector('.map__pin--main');
+var mapFiltersContainer = document.querySelector('.map__filters-container');
+var mapFilters = mapFiltersContainer.querySelector('.map__filters');
 var pinTemplate = document.querySelector('#pin')
     .content
     .querySelector('.map__pin');
@@ -33,6 +35,7 @@ var cardTemplate = document.querySelector('#card')
     .querySelector('.map__card');
 var fragment = document.createDocumentFragment();
 var OfferCard = document.createDocumentFragment();
+var adForm = document.querySelector('.ad-form');
 
 var getRandomIndex = function (maxIndex) {
   return Math.floor(Math.random() * maxIndex);
@@ -125,7 +128,21 @@ var renderCard = function (card) {
   return cardElement;
 };
 
-map.classList.remove('map--faded');
+var blockFields = function (form, field) {
+  form.querySelectorAll(field).forEach(function (fld) {
+    fld.setAttribute('disabled', 'disabled');
+  });
+};
+
+var unblockFields = function (form, field) {
+  form.querySelectorAll(field).forEach(function (fld) {
+    fld.removeAttribute('disabled');
+  });
+};
+// Блок с картой .map содержит класс map--faded;
+// Форма заполнения информации об объявлении .ad-form содержит класс ad-form--disabled;
+// Все <input> и <select> формы .ad-form заблокированы с помощью атрибута disabled, добавленного на них или на их родительские блоки fieldset
+// Форма с фильтрами .map__filters заблокирована так же, как и форма .ad-form
 
 var offers = getArrayOffers();
 
@@ -137,4 +154,19 @@ mapPins.appendChild(fragment);
 
 OfferCard.append(renderCard(offers[0]));
 
-mapFilters.before(OfferCard);
+// mapFiltersContainer.before(OfferCard);
+
+
+blockFields(adForm, 'fieldset');
+blockFields(mapFilters, 'select');
+blockFields(mapFilters, 'input');
+
+mainMapPin.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+    unblockFields(adForm, 'fieldset');
+    unblockFields(mapFilters, 'select');
+    unblockFields(mapFilters, 'input');
+  }
+});
