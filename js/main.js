@@ -14,7 +14,7 @@ var MAX_PRICE = 5000;
 var ENTER_KEY = 'Enter';
 
 var arrTypes = ['palace', 'flat', 'house', 'bungalo'];
-var HouseType = {
+var houseType = {
   PALACE: 'Дворец',
   BUNGALO: 'Бунгало',
   FLAT: 'Квартира',
@@ -37,7 +37,7 @@ var cardTemplate = document.querySelector('#card')
     .content
     .querySelector('.map__card');
 var fragment = document.createDocumentFragment();
-var OfferCard = document.createDocumentFragment();
+var offerCard = document.createDocumentFragment();
 var adForm = document.querySelector('.ad-form');
 var capacitySelect = adForm.querySelector('#capacity');
 var roomSelect = adForm.querySelector('#room_number');
@@ -119,7 +119,7 @@ var renderCard = function (card) {
   cardElement.querySelector('.popup__title').textContent = card.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = HouseType[card.offer.type.toUpperCase()];
+  cardElement.querySelector('.popup__type').textContent = houseType[card.offer.type.toUpperCase()];
   cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
   getFeature(listFeatures, card.offer.features);
@@ -145,24 +145,35 @@ var unblockFields = function (form, field) {
   });
 };
 
+var getAddress = function () {
+  var x = parseInt(mainMapPin.offsetLeft, 10) + PIN_WIDTH_ACTIVE / 2;
+  var y = parseInt(mainMapPin.offsetTop, 10) + PIN_HEIGHT_ACTIVE;
+  adForm.querySelector('#address').value = x + ', ' + y;
+};
+
 var unblockForm = function () {
   map.classList.remove('map--faded');
+  mapPins.appendChild(fragment);
   adForm.classList.remove('ad-form--disabled');
   unblockFields(adForm, 'fieldset');
   unblockFields(mapFilters, 'select');
   unblockFields(mapFilters, 'input');
-  var x = parseInt(mainMapPin.style.left, 10) + PIN_WIDTH_ACTIVE / 2;
-  var y = parseInt(mainMapPin.style.top, 10) + PIN_HEIGHT_ACTIVE;
-  adForm.querySelector('#address').value = x + ', ' + y;
+  getAddress();
 };
 
 var verificationCapacity = function () {
-  var selectedOption = capacitySelect.options[capacitySelect.selectedIndex];
-  var selectedRoom = roomSelect.options[roomSelect.selectedIndex];
-  if (selectedRoom.value === selectedOption.value) {
-    capacitySelect.setCustomValidity('');
+  var Capacity = parseInt(capacitySelect.options[capacitySelect.selectedIndex].value, 10);
+  var Room = parseInt(roomSelect.options[roomSelect.selectedIndex].value, 10);
+  if (Room >= Capacity) {
+    if ((Room === 100) && (Capacity !== 0)) {
+      capacitySelect.setCustomValidity('Такое количество комнат не предназначено для гостей.');
+    } else if ((Room !== 100) && (Capacity === 0)) {
+      capacitySelect.setCustomValidity('Укажите количество гостей.');
+    } else {
+      capacitySelect.setCustomValidity('');
+    }
   } else {
-    capacitySelect.setCustomValidity('Выбранное количество гостей не подходит под количество комнат');
+    capacitySelect.setCustomValidity('Количество гостей не должно быть больше количества комнат');
   }
 };
 
@@ -172,12 +183,9 @@ offers.forEach(function (offer) {
   fragment.appendChild(renderPin(offer));
 });
 
-mapPins.appendChild(fragment);
-
-OfferCard.append(renderCard(offers[0]));
-
+offerCard.append(renderCard(offers[0]));
 // временно
-// mapFiltersContainer.before(OfferCard);
+// mapFiltersContainer.before(offerCard);
 
 blockFields(adForm, 'fieldset');
 blockFields(mapFilters, 'select');
@@ -187,7 +195,7 @@ var yAddress = parseInt(mainMapPin.style.top, 10) + PIN_HEIGHT_INACTIVE / 2;
 adForm.querySelector('#address').value = xAddress + ', ' + yAddress;
 
 mainMapPin.addEventListener('mousedown', function (evt) {
-  if (evt.button === 0) {
+  if ((evt.button === 0) && (document.querySelector('.map--faded'))) {
     unblockForm();
   }
 });
