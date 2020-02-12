@@ -2,16 +2,21 @@
 var MAP_WIDTH = 1200;
 var MAP_MIN_HEIGHT = 130;
 var MAP_MAX_HEIGHT = 630;
-var PIN_WIDTH = 50;
-var PIN_HEIGHT = 70;
+var PIN_WIDTH_INACTIVE = 65;
+var PIN_HEIGHT_INACTIVE = 65;
+var PIN_WIDTH_ACTIVE = 75;
+var PIN_HEIGHT_ACTIVE = 87;
 var COUNT_OFFERS = 8;
 var MAX_ROOMS = 4;
 var MAX_GUESTS = 10;
 var MAX_X_Y = 600;
 var MAX_PRICE = 5000;
+var ENTER_KEY = 'Enter';
+var CONFERENCE_ROOM = 100;
+var CAPACITY_CONFERENCE_ROOM = 0;
 
 var arrTypes = ['palace', 'flat', 'house', 'bungalo'];
-var HouseType = {
+var houseType = {
   PALACE: 'Дворец',
   BUNGALO: 'Бунгало',
   FLAT: 'Квартира',
@@ -24,7 +29,9 @@ var photoStyle = {
 };
 var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
-var mapFilters = document.querySelector('.map__filters-container');
+var mainMapPin = document.querySelector('.map__pin--main');
+var mapFiltersContainer = document.querySelector('.map__filters-container');
+var mapFilters = mapFiltersContainer.querySelector('.map__filters');
 var pinTemplate = document.querySelector('#pin')
     .content
     .querySelector('.map__pin');
@@ -32,7 +39,10 @@ var cardTemplate = document.querySelector('#card')
     .content
     .querySelector('.map__card');
 var fragment = document.createDocumentFragment();
-var OfferCard = document.createDocumentFragment();
+var offerCard = document.createDocumentFragment();
+var adForm = document.querySelector('.ad-form');
+var capacitySelect = adForm.querySelector('#capacity');
+var roomSelect = adForm.querySelector('#room_number');
 
 var getRandomIndex = function (maxIndex) {
   return Math.floor(Math.random() * maxIndex);
@@ -58,8 +68,8 @@ var getArrayOffers = function () {
           photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
         },
         location: {
-          x: getRandomIndex(MAP_WIDTH) - PIN_WIDTH / 2,
-          y: getRandomIndex(MAP_MAX_HEIGHT - MAP_MIN_HEIGHT) + MAP_MIN_HEIGHT - PIN_HEIGHT}
+          x: getRandomIndex(MAP_WIDTH) - PIN_WIDTH_ACTIVE / 2,
+          y: getRandomIndex(MAP_MAX_HEIGHT - MAP_MIN_HEIGHT) + MAP_MIN_HEIGHT - PIN_HEIGHT_ACTIVE}
         }
     );
   }
@@ -71,8 +81,8 @@ var renderPin = function (pin) {
   var pinElement = pinTemplate.cloneNode(true);
   var pinImg = pinElement.querySelector('img');
 
-  pinElement.style.left = (pin.location.x + PIN_WIDTH / 2) + 'px';
-  pinElement.style.top = (pin.location.y + PIN_HEIGHT) + 'px';
+  pinElement.style.left = (pin.location.x + PIN_WIDTH_ACTIVE / 2) + 'px';
+  pinElement.style.top = (pin.location.y + PIN_HEIGHT_ACTIVE) + 'px';
   pinImg.src = pin.author.avatar;
   pinImg.alt = pin.offer.title;
 
@@ -111,7 +121,7 @@ var renderCard = function (card) {
   cardElement.querySelector('.popup__title').textContent = card.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = HouseType[card.offer.type.toUpperCase()];
+  cardElement.querySelector('.popup__type').textContent = houseType[card.offer.type.toUpperCase()];
   cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
   getFeature(listFeatures, card.offer.features);
@@ -125,16 +135,86 @@ var renderCard = function (card) {
   return cardElement;
 };
 
-map.classList.remove('map--faded');
+var blockFields = function (form, field) {
+  form.querySelectorAll(field).forEach(function (fld) {
+    fld.disabled = 'disabled';
+  });
+};
+
+var unblockFields = function (form, field) {
+  form.querySelectorAll(field).forEach(function (fld) {
+    fld.removeAttribute('disabled');
+  });
+};
+
+var getAddress = function () {
+  var x = parseInt(mainMapPin.offsetLeft, 10) + PIN_WIDTH_ACTIVE / 2;
+  var y = parseInt(mainMapPin.offsetTop, 10) + PIN_HEIGHT_ACTIVE;
+  adForm.querySelector('#address').value = x + ', ' + y;
+};
+
+var unblockForm = function () {
+  map.classList.remove('map--faded');
+  drawPin();
+  adForm.classList.remove('ad-form--disabled');
+  unblockFields(adForm, 'fieldset');
+  unblockFields(mapFilters, 'select');
+  unblockFields(mapFilters, 'input');
+  getAddress();
+};
+
+var verificationCapacity = function () {
+  var capacity = parseInt(capacitySelect.options[capacitySelect.selectedIndex].value, 10);
+  var room = parseInt(roomSelect.options[roomSelect.selectedIndex].value, 10);
+  if (room >= capacity) {
+    if ((room === 100) && (capacity !== 0)) {
+      capacitySelect.setCustomValidity('Такое количество комнат не предназначено для гостей.');
+    } else if ((room !== CONFERENCE_ROOM) && (capacity === CAPACITY_CONFERENCE_ROOM)) {
+      capacitySelect.setCustomValidity('Укажите количество гостей.');
+    } else {
+      capacitySelect.setCustomValidity('');
+    }
+  } else {
+    capacitySelect.setCustomValidity('Количество гостей не должно быть больше количества комнат');
+  }
+};
+
+var drawPin = function () {
+  offers.forEach(function (offer) {
+    fragment.appendChild(renderPin(offer));
+  });
+  mapPins.appendChild(fragment);
+};
 
 var offers = getArrayOffers();
 
-offers.forEach(function (offer) {
-  fragment.appendChild(renderPin(offer));
+offerCard.append(renderCard(offers[0]));
+// временно
+// mapFiltersContainer.before(offerCard);
+
+blockFields(adForm, 'fieldset');
+blockFields(mapFilters, 'select');
+blockFields(mapFilters, 'input');
+var xAddress = parseInt(mainMapPin.style.left, 10) + PIN_WIDTH_INACTIVE / 2;
+var yAddress = parseInt(mainMapPin.style.top, 10) + PIN_HEIGHT_INACTIVE / 2;
+adForm.querySelector('#address').value = xAddress + ', ' + yAddress;
+
+mainMapPin.addEventListener('mousedown', function (evt) {
+  if ((evt.button === 0) && (document.querySelector('.map--faded'))) {
+    unblockForm();
+  }
 });
 
-mapPins.appendChild(fragment);
+mainMapPin.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    unblockForm();
+  }
+});
 
-OfferCard.append(renderCard(offers[0]));
+capacitySelect.addEventListener('change', verificationCapacity);
+roomSelect.addEventListener('change', verificationCapacity);
 
-mapFilters.before(OfferCard);
+// console.log(adForm.querySelector('#capacity').options[0]); - <option value="3">для 3 гостей</option>
+// console.log(adForm.querySelector('#capacity').options[2].index); - 2
+// console.log(adForm.querySelector('#capacity').options[2].text); - для 1 гостя
+// console.log(adForm.querySelector('#capacity').options[2].value); - 1
