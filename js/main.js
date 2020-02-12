@@ -12,6 +12,8 @@ var MAX_GUESTS = 10;
 var MAX_X_Y = 600;
 var MAX_PRICE = 5000;
 var ENTER_KEY = 'Enter';
+var CONFERENCE_ROOM = 100;
+var CAPACITY_CONFERENCE_ROOM = 0;
 
 var arrTypes = ['palace', 'flat', 'house', 'bungalo'];
 var houseType = {
@@ -153,7 +155,7 @@ var getAddress = function () {
 
 var unblockForm = function () {
   map.classList.remove('map--faded');
-  mapPins.appendChild(fragment);
+  drawPin();
   adForm.classList.remove('ad-form--disabled');
   unblockFields(adForm, 'fieldset');
   unblockFields(mapFilters, 'select');
@@ -162,12 +164,12 @@ var unblockForm = function () {
 };
 
 var verificationCapacity = function () {
-  var Capacity = parseInt(capacitySelect.options[capacitySelect.selectedIndex].value, 10);
-  var Room = parseInt(roomSelect.options[roomSelect.selectedIndex].value, 10);
-  if (Room >= Capacity) {
-    if ((Room === 100) && (Capacity !== 0)) {
+  var capacity = parseInt(capacitySelect.options[capacitySelect.selectedIndex].value, 10);
+  var room = parseInt(roomSelect.options[roomSelect.selectedIndex].value, 10);
+  if (room >= capacity) {
+    if ((room === 100) && (capacity !== 0)) {
       capacitySelect.setCustomValidity('Такое количество комнат не предназначено для гостей.');
-    } else if ((Room !== 100) && (Capacity === 0)) {
+    } else if ((room !== CONFERENCE_ROOM) && (capacity === CAPACITY_CONFERENCE_ROOM)) {
       capacitySelect.setCustomValidity('Укажите количество гостей.');
     } else {
       capacitySelect.setCustomValidity('');
@@ -177,11 +179,14 @@ var verificationCapacity = function () {
   }
 };
 
-var offers = getArrayOffers();
+var drawPin = function () {
+  offers.forEach(function (offer) {
+    fragment.appendChild(renderPin(offer));
+  });
+  mapPins.appendChild(fragment);
+};
 
-offers.forEach(function (offer) {
-  fragment.appendChild(renderPin(offer));
-});
+var offers = getArrayOffers();
 
 offerCard.append(renderCard(offers[0]));
 // временно
