@@ -14,6 +14,8 @@ var MAX_PRICE = 5000;
 var ENTER_KEY = 'Enter';
 var CONFERENCE_ROOM = 100;
 var CAPACITY_CONFERENCE_ROOM = 0;
+var ESC_KEY = 'Escape';
+// var ENTER_KEY = 'Enter';
 
 var arrTypes = ['palace', 'flat', 'house', 'bungalo'];
 var houseType = {
@@ -87,8 +89,28 @@ var renderPin = function (pin) {
   pinImg.alt = pin.offer.title;
 
   pinElement.addEventListener('click', function () {
+    var onCardEscPress = function (evt) {
+      if (evt.key === ESC_KEY) {
+        closeCard();
+      }
+    };
+
+    var closeCard = function () {
+      if (map.querySelector('.map__card')) {
+        map.querySelector('.map__card').remove();
+      }
+      document.removeEventListener('keydown', onCardEscPress);
+    };
+
+    closeCard();
     offerCard.append(renderCard(pin));
     mapFiltersContainer.before(offerCard);
+
+    var setupClose = map.querySelector('.popup__close');
+    setupClose.addEventListener('click', function () {
+      closeCard();
+    });
+    document.addEventListener('keydown', onCardEscPress);
   });
 
   return pinElement;
@@ -136,7 +158,6 @@ var renderCard = function (card) {
     getPhoto(listPhotos, photo);
   });
   cardElement.querySelector('.popup__avatar').src = card.author.avatar;
-  console.log(card.author.avatar);
 
   return cardElement;
 };
@@ -194,10 +215,6 @@ var drawPin = function () {
 
 var offers = getArrayOffers();
 
-// offerCard.append(renderCard(offers[0]));
-// временно
-// mapFiltersContainer.before(offerCard);
-
 blockFields(adForm, 'fieldset');
 blockFields(mapFilters, 'select');
 blockFields(mapFilters, 'input');
@@ -208,12 +225,6 @@ adForm.querySelector('#address').value = xAddress + ', ' + yAddress;
 mainMapPin.addEventListener('mousedown', function (evt) {
   if ((evt.button === 0) && (document.querySelector('.map--faded'))) {
     unblockForm();
-    // var pins = mapPins.querySelectorAll('.map__pin');
-    // pins.forEach(function (pin) {
-    //   pin.addEventListener('click', function () {
-    //     console.log('Нажали на объект ' + pin.nodeName);
-    //   });
-    // });
   }
 });
 
@@ -225,6 +236,4 @@ mainMapPin.addEventListener('keydown', function (evt) {
 
 capacitySelect.addEventListener('change', verificationCapacity);
 roomSelect.addEventListener('change', verificationCapacity);
-
-// Доработайте проект так, чтобы пользователь мог открыть карточку любого доступного объявления;
 
