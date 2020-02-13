@@ -23,6 +23,12 @@ var houseType = {
   FLAT: 'Квартира',
   HOUSE: 'Дом'
 };
+var minPrices = {
+  BUNGALO: 0,
+  FLAT: 1000,
+  HOUSE: 5000,
+  PALACE: 10000
+};
 var arrCheck = ['12:00', '13:00', '14:00'];
 var photoStyle = {
   width: 45,
@@ -227,6 +233,12 @@ var drawPin = function () {
   mapPins.appendChild(fragment);
 };
 
+var verificationPrice = function () {
+  var type = typeSelect.options[typeSelect.selectedIndex].value;
+  price.min = minPrices[type.toUpperCase()];
+  price.placeholder = minPrices[type.toUpperCase()];
+};
+
 var offers = getArrayOffers();
 
 blockFields(adForm, 'fieldset');
@@ -250,24 +262,8 @@ mainMapPin.addEventListener('keydown', function (evt) {
 
 capacitySelect.addEventListener('change', verificationCapacity);
 roomSelect.addEventListener('change', verificationCapacity);
-typeSelect.addEventListener('change', function () {
-  var type = typeSelect.options[typeSelect.selectedIndex].value;
-  switch (type) {
-    case 'bungalo':
-      price.min = 0;
-      break;
-    case 'flat':
-      price.min = 1000;
-      break;
-    case 'house':
-      price.min = 5000;
-      break;
-    case 'palace':
-      price.min = 10000;
-      break;
-  }
-});
-
+typeSelect.addEventListener('change', verificationPrice);
+price.addEventListener('change', verificationPrice);
 timeinSelect.addEventListener('change', function () {
   timeoutSelect.value = timeinSelect.value;
 });
