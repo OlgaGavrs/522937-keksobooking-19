@@ -86,6 +86,11 @@ var renderPin = function (pin) {
   pinImg.src = pin.author.avatar;
   pinImg.alt = pin.offer.title;
 
+  pinElement.addEventListener('click', function () {
+    offerCard.append(renderCard(pin));
+    mapFiltersContainer.before(offerCard);
+  });
+
   return pinElement;
 };
 
@@ -130,7 +135,8 @@ var renderCard = function (card) {
   card.offer.photos.forEach(function (photo) {
     getPhoto(listPhotos, photo);
   });
-  cardElement.querySelector('.popup__avatar').style.src = card.author.avatar;
+  cardElement.querySelector('.popup__avatar').src = card.author.avatar;
+  console.log(card.author.avatar);
 
   return cardElement;
 };
@@ -188,7 +194,7 @@ var drawPin = function () {
 
 var offers = getArrayOffers();
 
-offerCard.append(renderCard(offers[0]));
+// offerCard.append(renderCard(offers[0]));
 // временно
 // mapFiltersContainer.before(offerCard);
 
@@ -202,6 +208,12 @@ adForm.querySelector('#address').value = xAddress + ', ' + yAddress;
 mainMapPin.addEventListener('mousedown', function (evt) {
   if ((evt.button === 0) && (document.querySelector('.map--faded'))) {
     unblockForm();
+    // var pins = mapPins.querySelectorAll('.map__pin');
+    // pins.forEach(function (pin) {
+    //   pin.addEventListener('click', function () {
+    //     console.log('Нажали на объект ' + pin.nodeName);
+    //   });
+    // });
   }
 });
 
@@ -214,7 +226,5 @@ mainMapPin.addEventListener('keydown', function (evt) {
 capacitySelect.addEventListener('change', verificationCapacity);
 roomSelect.addEventListener('change', verificationCapacity);
 
-// console.log(adForm.querySelector('#capacity').options[0]); - <option value="3">для 3 гостей</option>
-// console.log(adForm.querySelector('#capacity').options[2].index); - 2
-// console.log(adForm.querySelector('#capacity').options[2].text); - для 1 гостя
-// console.log(adForm.querySelector('#capacity').options[2].value); - 1
+// Доработайте проект так, чтобы пользователь мог открыть карточку любого доступного объявления;
+
