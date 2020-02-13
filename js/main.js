@@ -11,11 +11,10 @@ var MAX_ROOMS = 4;
 var MAX_GUESTS = 10;
 var MAX_X_Y = 600;
 var MAX_PRICE = 5000;
-var ENTER_KEY = 'Enter';
 var CONFERENCE_ROOM = 100;
 var CAPACITY_CONFERENCE_ROOM = 0;
 var ESC_KEY = 'Escape';
-// var ENTER_KEY = 'Enter';
+var ENTER_KEY = 'Enter';
 
 var arrTypes = ['palace', 'flat', 'house', 'bungalo'];
 var houseType = {
@@ -88,21 +87,20 @@ var renderPin = function (pin) {
   pinImg.src = pin.author.avatar;
   pinImg.alt = pin.offer.title;
 
-  pinElement.addEventListener('click', function () {
-    var onCardEscPress = function (evt) {
-      if (evt.key === ESC_KEY) {
-        closeCard();
-      }
-    };
+  var onCardEscPress = function (evt) {
+    if (evt.key === ESC_KEY) {
+      closeCard();
+    }
+  };
 
-    var closeCard = function () {
-      if (map.querySelector('.map__card')) {
-        map.querySelector('.map__card').remove();
-      }
-      document.removeEventListener('keydown', onCardEscPress);
-    };
+  var closeCard = function () {
+    if (map.querySelector('.map__card')) {
+      map.querySelector('.map__card').remove();
+    }
+    document.removeEventListener('keydown', onCardEscPress);
+  };
 
-    closeCard();
+  var openCard = function () {
     offerCard.append(renderCard(pin));
     mapFiltersContainer.before(offerCard);
 
@@ -111,6 +109,18 @@ var renderPin = function (pin) {
       closeCard();
     });
     document.addEventListener('keydown', onCardEscPress);
+  };
+
+  pinElement.addEventListener('click', function () {
+    closeCard();
+    openCard();
+  });
+
+  pinElement.addEventListener('keydown', function (evt) {
+    if (evt.key === ENTER_KEY) {
+      closeCard();
+      openCard();
+    }
   });
 
   return pinElement;
