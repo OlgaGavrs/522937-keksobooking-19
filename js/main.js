@@ -44,6 +44,10 @@ var offerCard = document.createDocumentFragment();
 var adForm = document.querySelector('.ad-form');
 var capacitySelect = adForm.querySelector('#capacity');
 var roomSelect = adForm.querySelector('#room_number');
+var typeSelect = adForm.querySelector('#type');
+var price = adForm.querySelector('#price');
+var timeinSelect = adForm.querySelector('#timein');
+var timeoutSelect = adForm.querySelector('#timeout');
 
 var getRandomIndex = function (maxIndex) {
   return Math.floor(Math.random() * maxIndex);
@@ -246,4 +250,28 @@ mainMapPin.addEventListener('keydown', function (evt) {
 
 capacitySelect.addEventListener('change', verificationCapacity);
 roomSelect.addEventListener('change', verificationCapacity);
+typeSelect.addEventListener('change', function () {
+  var type = typeSelect.options[typeSelect.selectedIndex].value;
+  switch (type) {
+    case 'bungalo':
+      price.min = 0;
+      break;
+    case 'flat':
+      price.min = 1000;
+      break;
+    case 'house':
+      price.min = 5000;
+      break;
+    case 'palace':
+      price.min = 10000;
+      break;
+  }
+});
 
+timeinSelect.addEventListener('change', function () {
+  timeoutSelect.value = timeinSelect.value;
+});
+
+timeoutSelect.addEventListener('change', function () {
+  timeinSelect.value = timeoutSelect.value;
+});
