@@ -17,19 +17,25 @@ var ESC_KEY = 'Escape';
 var ENTER_KEY = 'Enter';
 
 var arrTypes = ['palace', 'flat', 'house', 'bungalo'];
-var houseType = {
-  PALACE: 'Дворец',
-  BUNGALO: 'Бунгало',
-  FLAT: 'Квартира',
-  HOUSE: 'Дом'
+var HouseType = {
+  PALACE: {
+    name: 'Дворец',
+    price: 10000
+  },
+  BUNGALO: {
+    name: 'Бунгало',
+    price: 0
+  },
+  FLAT: {
+    name: 'Квартира',
+    price: 1000
+  },
+  HOUSE: {
+    name: 'Дом',
+    price: 5000
+  }
 };
-var minPrices = {
-  BUNGALO: 0,
-  FLAT: 1000,
-  HOUSE: 5000,
-  PALACE: 10000
-};
-var arrCheck = ['12:00', '13:00', '14:00'];
+var availibleTime = ['12:00', '13:00', '14:00'];
 var photoStyle = {
   width: 45,
   height: 40
@@ -72,8 +78,8 @@ var getArrayOffers = function () {
           type: arrTypes[getRandomIndex(arrTypes.length)],
           rooms: getRandomIndex(MAX_ROOMS),
           guests: getRandomIndex(MAX_GUESTS),
-          checkin: arrCheck[getRandomIndex(arrCheck.length)],
-          checkout: arrCheck[getRandomIndex(arrCheck.length)],
+          checkin: availibleTime[getRandomIndex(availibleTime.length)],
+          checkout: availibleTime[getRandomIndex(availibleTime.length)],
           features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
           description: 'Строка с описанием',
           photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
@@ -168,7 +174,7 @@ var renderCard = function (card) {
   cardElement.querySelector('.popup__title').textContent = card.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = houseType[card.offer.type.toUpperCase()];
+  cardElement.querySelector('.popup__type').textContent = HouseType[card.offer.type.toUpperCase()].name;
   cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
   getFeature(listFeatures, card.offer.features);
@@ -235,8 +241,8 @@ var drawPin = function () {
 
 var verificationPrice = function () {
   var type = typeSelect.options[typeSelect.selectedIndex].value;
-  price.min = minPrices[type.toUpperCase()];
-  price.placeholder = minPrices[type.toUpperCase()];
+  price.min = HouseType[type.toUpperCase()].price;
+  price.placeholder = HouseType[type.toUpperCase()].price;
 };
 
 var offers = getArrayOffers();
