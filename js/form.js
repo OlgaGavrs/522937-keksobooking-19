@@ -1,9 +1,9 @@
 'use strict';
 (function () {
-  var PIN_WIDTH_INACTIVE = 65;
-  var PIN_HEIGHT_INACTIVE = 65;
-  var PIN_WIDTH_ACTIVE = 75;
-  var PIN_HEIGHT_ACTIVE = 87;
+  var PIN_WIDTH_INACTIVE = window.pin.widthInactive;
+  var PIN_HEIGHT_INACTIVE = window.pin.heightInactive;
+  var PIN_WIDTH_ACTIVE = window.pin.widthActive;
+  var PIN_HEIGHT_ACTIVE = window.pin.heightActive;
   var CONFERENCE_ROOM = 100;
   var CAPACITY_CONFERENCE_ROOM = 0;
 
@@ -19,24 +19,7 @@
   var price = adForm.querySelector('#price');
   var timeinSelect = adForm.querySelector('#timein');
   var timeoutSelect = adForm.querySelector('#timeout');
-  var HouseType = {
-    PALACE: {
-      name: 'Дворец',
-      price: 10000
-    },
-    BUNGALO: {
-      name: 'Бунгало',
-      price: 0
-    },
-    FLAT: {
-      name: 'Квартира',
-      price: 1000
-    },
-    HOUSE: {
-      name: 'Дом',
-      price: 5000
-    }
-  };
+  var HouseType = window.card.House;
 
   var blockFields = function (form, field) {
     form.querySelectorAll(field).forEach(function (fld) {

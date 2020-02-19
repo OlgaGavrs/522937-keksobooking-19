@@ -8,8 +8,8 @@
   var MAP_WIDTH = 1200;
   var MAP_MIN_HEIGHT = 130;
   var MAP_MAX_HEIGHT = 630;
-  var PIN_WIDTH_ACTIVE = 75;
-  var PIN_HEIGHT_ACTIVE = 87;
+  var PIN_WIDTH_ACTIVE = window.pin.widthActive;
+  var PIN_HEIGHT_ACTIVE = window.pin.heightActive;
 
   var arrTypes = ['palace', 'flat', 'house', 'bungalo'];
   var availibleTime = ['12:00', '13:00', '14:00'];

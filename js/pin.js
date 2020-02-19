@@ -1,5 +1,7 @@
 'use strict';
 (function () {
+  var PIN_WIDTH_INACTIVE = 65;
+  var PIN_HEIGHT_INACTIVE = 65;
   var PIN_WIDTH_ACTIVE = 75;
   var PIN_HEIGHT_ACTIVE = 87;
 
@@ -33,6 +35,10 @@
   };
 
   window.pin = {
+    widthInactive: PIN_WIDTH_INACTIVE,
+    heightInactive: PIN_HEIGHT_INACTIVE,
+    widthActive: PIN_WIDTH_ACTIVE,
+    heightActive: PIN_HEIGHT_ACTIVE,
     drawing: function () {
       window.data.forEach(function (offer) {
         fragment.appendChild(renderPin(offer));

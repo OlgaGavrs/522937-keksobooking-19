@@ -87,6 +87,7 @@
   };
 
   window.card = {
+    House: HouseType,
     opening: function (pin) {
       offerCard.append(renderCard(pin));
       mapFiltersContainer.before(offerCard);
