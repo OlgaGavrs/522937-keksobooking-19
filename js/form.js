@@ -1,9 +1,5 @@
 'use strict';
 (function () {
-  var PIN_WIDTH_INACTIVE = window.pin.widthInactive;
-  var PIN_HEIGHT_INACTIVE = window.pin.heightInactive;
-  var PIN_WIDTH_ACTIVE = window.pin.widthActive;
-  var PIN_HEIGHT_ACTIVE = window.pin.heightActive;
   var CONFERENCE_ROOM = 100;
   var CAPACITY_CONFERENCE_ROOM = 0;
 
@@ -11,8 +7,8 @@
   var adForm = document.querySelector('.ad-form');
   var mapFilters = document.querySelector('.map__filters');
   var mainMapPin = document.querySelector('.map__pin--main');
-  var xAddress = parseInt(mainMapPin.style.left, 10) + PIN_WIDTH_INACTIVE / 2;
-  var yAddress = parseInt(mainMapPin.style.top, 10) + PIN_HEIGHT_INACTIVE / 2;
+  var xAddress = parseInt(mainMapPin.style.left, 10) + window.data.pinWidthInactive / 2;
+  var yAddress = parseInt(mainMapPin.style.top, 10) + window.data.pinHeightInactive / 2;
   var capacitySelect = adForm.querySelector('#capacity');
   var roomSelect = adForm.querySelector('#room_number');
   var typeSelect = adForm.querySelector('#type');
@@ -34,8 +30,8 @@
   };
 
   var getAddress = function () {
-    var x = parseInt(mainMapPin.offsetLeft, 10) + PIN_WIDTH_ACTIVE / 2;
-    var y = parseInt(mainMapPin.offsetTop, 10) + PIN_HEIGHT_ACTIVE;
+    var x = parseInt(mainMapPin.offsetLeft, 10) + window.data.pinWidthActive / 2;
+    var y = parseInt(mainMapPin.offsetTop, 10) + window.data.pinHeightActive;
     adForm.querySelector('#address').value = x + ', ' + y;
   };
 
