@@ -7,8 +7,8 @@
   var adForm = document.querySelector('.ad-form');
   var mapFilters = document.querySelector('.map__filters');
   var mainMapPin = document.querySelector('.map__pin--main');
-  var xAddress = parseInt(mainMapPin.style.left, 10) + window.data.pinWidthInactive / 2;
-  var yAddress = parseInt(mainMapPin.style.top, 10) + window.data.pinHeightInactive / 2;
+  var xAddress = Math.floor(parseInt(mainMapPin.style.left, 10) + window.data.mainPinWidthInactive / 2);
+  var yAddress = Math.floor(parseInt(mainMapPin.style.top, 10) + window.data.mainPinHeightInactive / 2);
   var capacitySelect = adForm.querySelector('#capacity');
   var roomSelect = adForm.querySelector('#room_number');
   var typeSelect = adForm.querySelector('#type');
@@ -27,12 +27,6 @@
     form.querySelectorAll(field).forEach(function (fld) {
       fld.removeAttribute('disabled');
     });
-  };
-
-  var getAddress = function () {
-    var x = parseInt(mainMapPin.offsetLeft, 10) + window.data.pinWidthActive / 2;
-    var y = parseInt(mainMapPin.offsetTop, 10) + window.data.pinHeightActive;
-    adForm.querySelector('#address').value = x + ', ' + y;
   };
 
   var verificationCapacity = function () {
@@ -83,7 +77,11 @@
       unblockFields(adForm, 'fieldset');
       unblockFields(mapFilters, 'select');
       unblockFields(mapFilters, 'input');
-      getAddress();
+    },
+    addres: function () {
+      var x = Math.floor(parseInt(mainMapPin.offsetLeft, 10) + window.data.mainPinWidthActive / 2);
+      var y = Math.floor(parseInt(mainMapPin.offsetTop, 10) + window.data.mainPinHeightActive);
+      adForm.querySelector('#address').value = x + ', ' + y;
     }
   };
 })();
