@@ -1,11 +1,14 @@
 'use strict';
 (function () {
+  var Y_MIN = 130;
+  var Y_MAX = 630;
+
   var map = document.querySelector('.map');
   var mainMapPin = document.querySelector('.map__pin--main');
   var limits = {
-    top: 130,
+    top: Y_MIN - window.data.mainPinHeightActive,
     right: map.offsetWidth + map.offsetLeft,
-    bottom: 630 - mainMapPin.offsetHeight,
+    bottom: Y_MAX - window.data.mainPinHeightActive,
     left: map.offsetLeft
   };
 
@@ -40,9 +43,9 @@
         mainMapPin.style.left = (mainMapPin.offsetLeft - shift.x) + 'px';
       }
       if (evt.clientY > limits.bottom) {
-        mainMapPin.style.top = map.offsetHeight - window.data.mainPinHeightActive + 'px';
+        mainMapPin.style.top = limits.bottom + 'px';
       } else if (evt.clientY < limits.top) {
-        mainMapPin.style.top = 0;
+        mainMapPin.style.top = limits.top + 'px';
       } else {
         mainMapPin.style.top = (mainMapPin.offsetTop - shift.y) + 'px';
       }
