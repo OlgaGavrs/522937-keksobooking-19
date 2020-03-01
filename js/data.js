@@ -8,10 +8,12 @@
   var MAP_WIDTH = 1200;
   var MAP_MIN_HEIGHT = 130;
   var MAP_MAX_HEIGHT = 630;
-  var PIN_WIDTH_ACTIVE = 75;
-  var PIN_HEIGHT_ACTIVE = 87;
-  var PIN_WIDTH_INACTIVE = 65;
-  var PIN_HEIGHT_INACTIVE = 65;
+  var MAIN_PIN_WIDTH_ACTIVE = 65;
+  var MAIN_PIN_HEIGHT_ACTIVE = 81;
+  var MAIN_PIN_WIDTH_INACTIVE = 65;
+  var MAIN_PIN_HEIGHT_INACTIVE = 65;
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
 
   var arrTypes = ['palace', 'flat', 'house', 'bungalo'];
   var availibleTime = ['12:00', '13:00', '14:00'];
@@ -36,8 +38,8 @@
             photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
           },
           location: {
-            x: window.util.randomIndex(MAP_WIDTH) - PIN_WIDTH_ACTIVE / 2,
-            y: window.util.randomIndex(MAP_MAX_HEIGHT - MAP_MIN_HEIGHT) + MAP_MIN_HEIGHT - PIN_HEIGHT_ACTIVE}
+            x: window.util.randomIndex(MAP_WIDTH) - PIN_WIDTH / 2,
+            y: window.util.randomIndex(MAP_MAX_HEIGHT - MAP_MIN_HEIGHT) + MAP_MIN_HEIGHT - PIN_HEIGHT}
           }
       );
     }
@@ -46,10 +48,12 @@
   };
 
   window.data = {
-    pinWidthActive: PIN_WIDTH_ACTIVE,
-    pinHeightActive: PIN_HEIGHT_ACTIVE,
-    pinWidthInactive: PIN_WIDTH_INACTIVE,
-    pinHeightInative: PIN_HEIGHT_INACTIVE,
+    mainPinWidthActive: MAIN_PIN_WIDTH_ACTIVE,
+    mainPinHeightActive: MAIN_PIN_HEIGHT_ACTIVE,
+    mainPinWidthInactive: MAIN_PIN_WIDTH_INACTIVE,
+    mainPinHeightInactive: MAIN_PIN_HEIGHT_INACTIVE,
+    pinWidth: PIN_WIDTH,
+    pinHeight: PIN_HEIGHT,
     offers: getArrayOffers()
   };
 })();
