@@ -1,5 +1,7 @@
 'use strict';
 (function () {
+  var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
+
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin')
       .content
@@ -31,10 +33,12 @@
 
   window.pin = {
     drawing: function () {
-      window.data.offers.forEach(function (offer) {
-        fragment.appendChild(renderPin(offer));
+      window.backend.load('', 'GET', URL_LOAD, function (offers) {
+        offers.forEach(function (offer) {
+          fragment.appendChild(renderPin(offer));
+        });
+        mapPins.appendChild(fragment);
       });
-      mapPins.appendChild(fragment);
     }
   };
 })();
