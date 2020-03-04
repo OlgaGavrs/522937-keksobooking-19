@@ -1,14 +1,12 @@
 'use strict';
 (function () {
-  var Y_MIN = 130;
-  var Y_MAX = 630;
 
   var map = document.querySelector('.map');
   var mainMapPin = document.querySelector('.map__pin--main');
   var limits = {
-    top: Y_MIN - window.data.mainPinHeightActive,
+    top: window.data.yMin - window.data.mainPinHeightActive,
     right: map.offsetWidth + map.offsetLeft,
-    bottom: Y_MAX - window.data.mainPinHeightActive,
+    bottom: window.data.yMax - window.data.mainPinHeightActive,
     left: map.offsetLeft
   };
 

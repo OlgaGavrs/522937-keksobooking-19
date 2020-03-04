@@ -1,5 +1,7 @@
 'use strict';
 (function () {
+  var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
+
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin')
       .content
@@ -15,8 +17,8 @@
       window.card.opening(pin);
     };
 
-    pinElement.style.left = (pin.location.x + window.data.pinWidth / 2) + 'px';
-    pinElement.style.top = (pin.location.y + window.data.pinHeight) + 'px';
+    pinElement.style.left = (pin.location.x - window.data.pinWidth / 2) + 'px';
+    pinElement.style.top = (pin.location.y - window.data.pinHeight) + 'px';
     pinImg.src = pin.author.avatar;
     pinImg.alt = pin.offer.title;
 
@@ -31,10 +33,12 @@
 
   window.pin = {
     drawing: function () {
-      window.data.offers.forEach(function (offer) {
-        fragment.appendChild(renderPin(offer));
+      window.backend.load('GET', URL_LOAD, function (offers) {
+        offers.forEach(function (offer) {
+          fragment.appendChild(renderPin(offer));
+        });
+        mapPins.appendChild(fragment);
       });
-      mapPins.appendChild(fragment);
     }
   };
 })();
