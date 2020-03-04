@@ -38,8 +38,8 @@
             photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
           },
           location: {
-            x: window.util.randomIndex(MAP_WIDTH) - PIN_WIDTH / 2,
-            y: window.util.randomIndex(MAP_MAX_HEIGHT - MAP_MIN_HEIGHT) + MAP_MIN_HEIGHT - PIN_HEIGHT}
+            x: window.util.randomIndex(MAP_WIDTH), // - PIN_WIDTH / 2,
+            y: window.util.randomIndex(MAP_MAX_HEIGHT - MAP_MIN_HEIGHT) + MAP_MIN_HEIGHT} // - PIN_HEIGHT}
           }
       );
     }
@@ -54,6 +54,8 @@
     mainPinHeightInactive: MAIN_PIN_HEIGHT_INACTIVE,
     pinWidth: PIN_WIDTH,
     pinHeight: PIN_HEIGHT,
+    yMin: MAP_MIN_HEIGHT,
+    yMax: MAP_MAX_HEIGHT,
     offers: getArrayOffers()
   };
 })();

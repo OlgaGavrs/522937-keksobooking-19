@@ -15,8 +15,8 @@
       window.card.opening(pin);
     };
 
-    pinElement.style.left = (pin.location.x + window.data.pinWidth / 2) + 'px';
-    pinElement.style.top = (pin.location.y + window.data.pinHeight) + 'px';
+    pinElement.style.left = (pin.location.x - window.data.pinWidth / 2) + 'px';
+    pinElement.style.top = (pin.location.y - window.data.pinHeight) + 'px';
     pinImg.src = pin.author.avatar;
     pinImg.alt = pin.offer.title;
 
