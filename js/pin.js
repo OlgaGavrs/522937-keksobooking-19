@@ -33,7 +33,7 @@
 
   window.pin = {
     drawing: function () {
-      window.backend.load('', 'GET', URL_LOAD, function (offers) {
+      window.backend.load('GET', URL_LOAD, function (offers) {
         offers.forEach(function (offer) {
           fragment.appendChild(renderPin(offer));
         });
