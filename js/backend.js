@@ -32,6 +32,34 @@
         data = '';
       }
       xhr.send(data);
+    },
+    display: function (idTemplate, classTemplate, text) {
+      var fragment = document.createDocumentFragment();
+      var template = document.querySelector(idTemplate)
+        .content
+        .querySelector(classTemplate);
+      var element = template.cloneNode(true);
+      fragment.append(element);
+      document.querySelector('main').append(fragment);
+
+      var message = document.querySelector(classTemplate);
+
+      if (text) {
+        message.textContent = text;
+      }
+
+      var onMessageEscPress = function (evt) {
+        window.util.isEscEvent(evt, closeMessage);
+      };
+
+      var closeMessage = function () {
+        message.remove();
+        document.removeEventListener('keydown', onMessageEscPress);
+        document.removeEventListener('click', closeMessage);
+      };
+
+      document.addEventListener('keydown', onMessageEscPress);
+      document.addEventListener('click', closeMessage);
     }
   };
 })();
