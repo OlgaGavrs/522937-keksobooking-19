@@ -32,7 +32,7 @@
   };
 
   var displayError = function (textError) {
-    window.backend.display('#error', '.error', textError);
+    window.backend.display('error', textError);
   };
 
   window.pin = {

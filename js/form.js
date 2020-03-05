@@ -61,11 +61,11 @@
   };
 
   var displayMessage = function () {
-    window.backend.display('#success', '.success');
+    window.backend.display('success');
   };
 
   var displayError = function (textError) {
-    window.backend.display('#error', '.error', textError);
+    window.backend.display('error', textError);
   };
 
   blockAllFields();
@@ -94,8 +94,12 @@
       adForm.classList.add('ad-form--disabled');
       blockAllFields();
       displayMessage();
-    }, displayError(), new FormData(adForm));
+    }, displayError, new FormData(adForm));
     evt.preventDefault();
+  });
+
+  adForm.querySelector('.ad-form__reset').addEventListener('click', function () {
+    adForm.reset();
   });
 
   window.form = {

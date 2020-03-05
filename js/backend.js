@@ -33,7 +33,10 @@
       }
       xhr.send(data);
     },
-    display: function (idTemplate, classTemplate, text) {
+    display: function (typeMessage, text) {
+      var idTemplate = '#' + typeMessage;
+      var classTemplate = '.' + typeMessage;
+      var classMessageText = '.' + typeMessage + '__message';
       var fragment = document.createDocumentFragment();
       var template = document.querySelector(idTemplate)
         .content
@@ -43,9 +46,10 @@
       document.querySelector('main').append(fragment);
 
       var message = document.querySelector(classTemplate);
+      var messageText = message.querySelector(classMessageText);
 
       if (text) {
-        message.textContent = text;
+        messageText.textContent = text;
       }
 
       var onMessageEscPress = function (evt) {
@@ -56,8 +60,12 @@
         message.remove();
         document.removeEventListener('keydown', onMessageEscPress);
         document.removeEventListener('click', closeMessage);
+        // message.querySelector('.error__button').removeEventListener('click', closeMessage);
       };
 
+      // if (message.querySelector('.error__button')) {
+      //   message.querySelector('.error__button').addEventListener('click', closeMessage);
+      // }
       document.addEventListener('keydown', onMessageEscPress);
       document.addEventListener('click', closeMessage);
     }
