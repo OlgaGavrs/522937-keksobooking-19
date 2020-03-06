@@ -37,6 +37,7 @@
       var idTemplate = '#' + typeMessage;
       var classTemplate = '.' + typeMessage;
       var classMessageText = '.' + typeMessage + '__message';
+      var classMessageButton = '.' + typeMessage + '__button';
       var fragment = document.createDocumentFragment();
       var template = document.querySelector(idTemplate)
         .content
@@ -47,6 +48,7 @@
 
       var message = document.querySelector(classTemplate);
       var messageText = message.querySelector(classMessageText);
+      var messageButton = message.querySelector(classMessageButton);
 
       if (text) {
         messageText.textContent = text;
@@ -56,18 +58,27 @@
         window.util.isEscEvent(evt, closeMessage);
       };
 
+      var onMessageClick = function (clickEvt) {
+        switch (clickEvt.target) {
+          case messageText:
+            break;
+          case messageButton:
+            closeMessage();
+            break;
+          default:
+            closeMessage();
+            break;
+        }
+      };
+
       var closeMessage = function () {
         message.remove();
         document.removeEventListener('keydown', onMessageEscPress);
-        document.removeEventListener('click', closeMessage);
-        // message.querySelector('.error__button').removeEventListener('click', closeMessage);
+        document.removeEventListener('click', onMessageClick);
       };
 
-      // if (message.querySelector('.error__button')) {
-      //   message.querySelector('.error__button').addEventListener('click', closeMessage);
-      // }
       document.addEventListener('keydown', onMessageEscPress);
-      document.addEventListener('click', closeMessage);
+      document.addEventListener('click', onMessageClick);
     }
   };
 })();

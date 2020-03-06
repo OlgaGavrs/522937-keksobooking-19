@@ -68,6 +68,18 @@
     window.backend.display('error', textError);
   };
 
+  var reset = function () {
+    map.classList.add('map--faded');
+    adForm.reset();
+    mapFilters.reset();
+    mainMapPin.style.left = MAIN_PIN_START_X;
+    mainMapPin.style.top = MAIN_PIN_START_Y;
+    window.pin.delete();
+    window.card.closing();
+    adForm.classList.add('ad-form--disabled');
+    blockAllFields();
+  };
+
   blockAllFields();
 
   adForm.querySelector('#address').value = xAddress + ', ' + yAddress;
@@ -86,20 +98,14 @@
 
   adForm.addEventListener('submit', function (evt) {
     window.backend.load('POST', URL_SAVE, function () {
-      map.classList.add('map--faded');
-      mainMapPin.style.left = MAIN_PIN_START_X;
-      mainMapPin.style.top = MAIN_PIN_START_Y;
-      window.pin.delete();
-      adForm.reset();
-      adForm.classList.add('ad-form--disabled');
-      blockAllFields();
+      reset();
       displayMessage();
     }, displayError, new FormData(adForm));
     evt.preventDefault();
   });
 
   adForm.querySelector('.ad-form__reset').addEventListener('click', function () {
-    adForm.reset();
+    reset();
   });
 
   window.form = {
