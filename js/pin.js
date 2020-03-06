@@ -31,6 +31,10 @@
     return pinElement;
   };
 
+  var displayError = function (textError) {
+    window.backend.display('error', textError);
+  };
+
   window.pin = {
     drawing: function () {
       window.backend.load('GET', URL_LOAD, function (offers) {
@@ -38,6 +42,12 @@
           fragment.appendChild(renderPin(offer));
         });
         mapPins.appendChild(fragment);
+      }, displayError);
+    },
+    delete: function () {
+      var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+      pins.forEach(function (pin) {
+        pin.remove();
       });
     }
   };

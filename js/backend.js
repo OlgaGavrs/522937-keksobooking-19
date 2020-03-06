@@ -32,6 +32,53 @@
         data = '';
       }
       xhr.send(data);
+    },
+    display: function (typeMessage, text) {
+      var idTemplate = '#' + typeMessage;
+      var classTemplate = '.' + typeMessage;
+      var classMessageText = '.' + typeMessage + '__message';
+      var classMessageButton = '.' + typeMessage + '__button';
+      var fragment = document.createDocumentFragment();
+      var template = document.querySelector(idTemplate)
+        .content
+        .querySelector(classTemplate);
+      var element = template.cloneNode(true);
+      fragment.append(element);
+      document.querySelector('main').append(fragment);
+
+      var message = document.querySelector(classTemplate);
+      var messageText = message.querySelector(classMessageText);
+      var messageButton = message.querySelector(classMessageButton);
+
+      if (text) {
+        messageText.textContent = text;
+      }
+
+      var onMessageEscPress = function (evt) {
+        window.util.isEscEvent(evt, closeMessage);
+      };
+
+      var onMessageClick = function (clickEvt) {
+        switch (clickEvt.target) {
+          case messageText:
+            break;
+          case messageButton:
+            closeMessage();
+            break;
+          default:
+            closeMessage();
+            break;
+        }
+      };
+
+      var closeMessage = function () {
+        message.remove();
+        document.removeEventListener('keydown', onMessageEscPress);
+        document.removeEventListener('click', onMessageClick);
+      };
+
+      document.addEventListener('keydown', onMessageEscPress);
+      document.addEventListener('click', onMessageClick);
     }
   };
 })();

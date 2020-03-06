@@ -18,31 +18,31 @@
     downEvt.preventDefault();
 
     var startCoords = {
-      x: downEvt.clientX,
-      y: downEvt.clientY
+      x: downEvt.pageX,
+      y: downEvt.pageY
     };
 
     var getCoords = function (evt) {
       var shift = {
-        x: startCoords.x - evt.clientX,
-        y: startCoords.y - evt.clientY
+        x: startCoords.x - evt.pageX,
+        y: startCoords.y - evt.pageY
       };
 
       startCoords = {
-        x: evt.clientX,
-        y: evt.clientY
+        x: evt.pageX,
+        y: evt.pageY
       };
 
-      if (evt.clientX > limits.right) {
+      if (evt.pageX > limits.right) {
         mainMapPin.style.left = map.offsetWidth - window.data.mainPinWidthActive / 2 + 'px';
-      } else if (evt.clientX < limits.left) {
+      } else if (evt.pageX < limits.left) {
         mainMapPin.style.left = 0 - window.data.mainPinWidthActive / 2 + 'px';
       } else {
         mainMapPin.style.left = (mainMapPin.offsetLeft - shift.x) + 'px';
       }
-      if (evt.clientY > limits.bottom) {
+      if (evt.pageY > limits.bottom) {
         mainMapPin.style.top = limits.bottom + 'px';
-      } else if (evt.clientY < limits.top) {
+      } else if (evt.pageY < limits.top) {
         mainMapPin.style.top = limits.top + 'px';
       } else {
         mainMapPin.style.top = (mainMapPin.offsetTop - shift.y) + 'px';

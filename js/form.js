@@ -1,7 +1,10 @@
 'use strict';
 (function () {
+  var MAIN_PIN_START_X = '570px';
+  var MAIN_PIN_START_Y = '375px';
   var CONFERENCE_ROOM = 100;
   var CAPACITY_CONFERENCE_ROOM = 0;
+  var URL_SAVE = 'https://js.dump.academy/keksobooking';
 
   var map = document.querySelector('.map');
   var adForm = document.querySelector('.ad-form');
@@ -21,6 +24,12 @@
     form.querySelectorAll(field).forEach(function (fld) {
       fld.disabled = 'disabled';
     });
+  };
+
+  var blockAllFields = function () {
+    blockFields(adForm, 'fieldset');
+    blockFields(mapFilters, 'select');
+    blockFields(mapFilters, 'input');
   };
 
   var unblockFields = function (form, field) {
@@ -51,9 +60,27 @@
     price.placeholder = HouseType[type.toUpperCase()].price;
   };
 
-  blockFields(adForm, 'fieldset');
-  blockFields(mapFilters, 'select');
-  blockFields(mapFilters, 'input');
+  var displayMessage = function () {
+    window.backend.display('success');
+  };
+
+  var displayError = function (textError) {
+    window.backend.display('error', textError);
+  };
+
+  var reset = function () {
+    map.classList.add('map--faded');
+    adForm.reset();
+    mapFilters.reset();
+    mainMapPin.style.left = MAIN_PIN_START_X;
+    mainMapPin.style.top = MAIN_PIN_START_Y;
+    window.pin.delete();
+    window.card.closing();
+    adForm.classList.add('ad-form--disabled');
+    blockAllFields();
+  };
+
+  blockAllFields();
 
   adForm.querySelector('#address').value = xAddress + ', ' + yAddress;
 
@@ -67,6 +94,18 @@
 
   timeoutSelect.addEventListener('change', function () {
     timeinSelect.value = timeoutSelect.value;
+  });
+
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.load('POST', URL_SAVE, function () {
+      reset();
+      displayMessage();
+    }, displayError, new FormData(adForm));
+    evt.preventDefault();
+  });
+
+  adForm.querySelector('.ad-form__reset').addEventListener('click', function () {
+    reset();
   });
 
   window.form = {

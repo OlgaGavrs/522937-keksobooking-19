@@ -30,7 +30,7 @@
   };
 
   var onCardEscPress = function (evt) {
-    window.util.isEscEvent(evt, closeCard());
+    window.util.isEscEvent(evt, closeCard);
   };
 
   var closeCard = function () {
