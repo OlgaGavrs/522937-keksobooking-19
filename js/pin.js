@@ -1,6 +1,9 @@
 'use strict';
 (function () {
-  var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
+  var COUNT_OFFERS = 5;
+
+  var adForm = document.querySelector('.ad-form');
+  var mapFilters = document.querySelector('.map__filters');
 
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin')
@@ -31,18 +34,23 @@
     return pinElement;
   };
 
-  var displayError = function (textError) {
-    window.backend.display('error', textError);
+  var unblockFields = function (form, field) {
+    form.querySelectorAll(field).forEach(function (fld) {
+      fld.removeAttribute('disabled');
+    });
   };
 
   window.pin = {
-    drawing: function () {
-      window.backend.load('GET', URL_LOAD, function (offers) {
-        offers.forEach(function (offer) {
-          fragment.appendChild(renderPin(offer));
-        });
-        mapPins.appendChild(fragment);
-      }, displayError);
+    render: function (data) {
+      var takeNumber = data.length > COUNT_OFFERS ? COUNT_OFFERS : data.length;
+      fragment.innerHTML = '';
+      for (var i = 0; i < takeNumber; i++) {
+        fragment.appendChild(renderPin(data[i]));
+      }
+      mapPins.appendChild(fragment);
+      unblockFields(adForm, 'fieldset');
+      unblockFields(mapFilters, 'select');
+      unblockFields(mapFilters, 'input');
     },
     delete: function () {
       var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
