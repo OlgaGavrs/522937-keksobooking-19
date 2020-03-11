@@ -32,12 +32,6 @@
     blockFields(mapFilters, 'input');
   };
 
-  var unblockFields = function (form, field) {
-    form.querySelectorAll(field).forEach(function (fld) {
-      fld.removeAttribute('disabled');
-    });
-  };
-
   var verificationCapacity = function () {
     var capacity = parseInt(capacitySelect.options[capacitySelect.selectedIndex].value, 10);
     var room = parseInt(roomSelect.options[roomSelect.selectedIndex].value, 10);
@@ -111,11 +105,8 @@
   window.form = {
     unblocking: function () {
       map.classList.remove('map--faded');
-      window.pin.drawing();
+      window.similar();
       adForm.classList.remove('ad-form--disabled');
-      unblockFields(adForm, 'fieldset');
-      unblockFields(mapFilters, 'select');
-      unblockFields(mapFilters, 'input');
     },
     addres: function () {
       var x = Math.floor(parseInt(mainMapPin.offsetLeft, 10) + window.data.mainPinWidthActive / 2);
