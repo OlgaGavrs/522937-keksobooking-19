@@ -1,6 +1,8 @@
 'use strict';
 (function () {
   var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
+  var PRICE_MIN = 10000;
+  var PRICE_MAX = 50000;
 
   var typeSelect = document.querySelector('#housing-type');
   var priceSelect = document.querySelector('#housing-price');
@@ -13,9 +15,9 @@
     var clickedFeatures = document.querySelectorAll('.map__checkbox:checked');
 
     var getOfferPrice = function (price) {
-      if (price < 10000) {
+      if (price < PRICE_MIN) {
         return 'low';
-      } else if (price >= 10000 && price < 50000) {
+      } else if (price >= PRICE_MIN && price < PRICE_MAX) {
         return 'middle';
       } else {
         return 'high';
@@ -29,16 +31,21 @@
     };
 
     var sameFilterOffers = offers.filter(function (it) {
+      var flagType = compareValues(typeSelect, it.offer.type);
+      var flagPrice = compareValues(priceSelect, getOfferPrice(it.offer.price));
+      var flagRooms = compareValues(roomsSelect, (it.offer.rooms).toString());
+      var flagGuests = compareValues(guestsSelect, (it.offer.guests).toString());
       var flagFeatures = true;
-      for (var i = 0; i < clickedFeatures.length; i++) {
+      var i = 0;
+      while (i < clickedFeatures.length) {
         if (it.offer.features.indexOf(clickedFeatures[i].value) === -1) {
           flagFeatures = false;
+          break;
         }
+        i++;
       }
 
-      return compareValues(typeSelect, it.offer.type) && compareValues(priceSelect, getOfferPrice(it.offer.price)) &&
-      compareValues(roomsSelect, (it.offer.rooms).toString()) && compareValues(guestsSelect, (it.offer.guests).toString())
-      && flagFeatures;
+      return flagType && flagPrice && flagRooms && flagGuests && flagFeatures;
     });
 
     window.pin.delete();
