@@ -37,10 +37,9 @@
       var flagGuests = compareValues(guestsSelect, (it.offer.guests).toString());
       var flagFeatures = true;
       var i = 0;
-      while (i < clickedFeatures.length) {
+      while (i < clickedFeatures.length && flagFeatures) {
         if (it.offer.features.indexOf(clickedFeatures[i].value) === -1) {
           flagFeatures = false;
-          break;
         }
         i++;
       }
