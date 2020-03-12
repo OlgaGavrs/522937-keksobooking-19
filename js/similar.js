@@ -1,7 +1,6 @@
 'use strict';
 (function () {
   var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
-  var DEBOUNCE_INTERVAL = 500;
 
   var typeSelect = document.querySelector('#housing-type');
   var priceSelect = document.querySelector('#housing-price');
@@ -10,21 +9,7 @@
   var features = document.querySelector('#housing-features').querySelectorAll('input');
   var offers = [];
 
-  var debounce = function (cb) {
-    var lastTimeout = null;
-
-    return function () {
-      var parameters = arguments;
-      if (lastTimeout) {
-        window.clearTimeout(lastTimeout);
-      }
-      lastTimeout = window.setTimeout(function () {
-        cb.apply(null, parameters);
-      }, DEBOUNCE_INTERVAL);
-    };
-  };
-
-  var updateOfferss = function () {
+  var updateOffers = function () {
     var clickedFeatures = document.querySelectorAll('.map__checkbox:checked');
 
     var getOfferPrice = function (price) {
@@ -37,11 +22,13 @@
       }
     };
 
-    var sameFilterOfferss = offers.filter(function (it) {
-      var typeSelectValue = typeSelect.options[typeSelect.selectedIndex].value;
-      var priceSelectValue = priceSelect.options[priceSelect.selectedIndex].value;
-      var roomsSelectValue = roomsSelect.options[roomsSelect.selectedIndex].value;
-      var guestsSelectValue = guestsSelect.options[guestsSelect.selectedIndex].value;
+    var compareValues = function (select, value) {
+      var selectValue = select.options[select.selectedIndex].value;
+      var offerValue = selectValue === 'any' ? 'any' : value;
+      return (offerValue === selectValue);
+    };
+
+    var sameFilterOffers = offers.filter(function (it) {
       var flagFeatures = true;
       for (var i = 0; i < clickedFeatures.length; i++) {
         if (it.offer.features.indexOf(clickedFeatures[i].value) === -1) {
@@ -49,31 +36,27 @@
         }
       }
 
-      var offerType = typeSelectValue === 'any' ? 'any' : it.offer.type;
-      var offerPrice = priceSelectValue === 'any' ? 'any' : getOfferPrice(it.offer.price);
-      var offerRooms = roomsSelectValue === 'any' ? 'any' : (it.offer.rooms).toString();
-      var offerGuests = guestsSelectValue === 'any' ? 'any' : (it.offer.guests).toString();
-
-      return (offerType === typeSelectValue) && (offerPrice === priceSelectValue) && (offerRooms === roomsSelectValue) && (offerGuests === guestsSelectValue)
+      return compareValues(typeSelect, it.offer.type) && compareValues(priceSelect, getOfferPrice(it.offer.price)) &&
+      compareValues(roomsSelect, (it.offer.rooms).toString()) && compareValues(guestsSelect, (it.offer.guests).toString())
       && flagFeatures;
     });
 
     window.pin.delete();
-    window.pin.render(sameFilterOfferss);
+    window.pin.render(sameFilterOffers);
     window.card.closing();
   };
 
-  typeSelect.addEventListener('change', debounce(updateOfferss));
-  priceSelect.addEventListener('change', debounce(updateOfferss));
-  roomsSelect.addEventListener('change', debounce(updateOfferss));
-  guestsSelect.addEventListener('change', debounce(updateOfferss));
+  typeSelect.addEventListener('change', window.util.debounce(updateOffers));
+  priceSelect.addEventListener('change', window.util.debounce(updateOffers));
+  roomsSelect.addEventListener('change', window.util.debounce(updateOffers));
+  guestsSelect.addEventListener('change', window.util.debounce(updateOffers));
   features.forEach(function (feature) {
-    feature.addEventListener('change', debounce(updateOfferss));
+    feature.addEventListener('change', window.util.debounce(updateOffers));
   });
 
   var successHandler = function (data) {
     offers = data;
-    updateOfferss();
+    updateOffers();
   };
 
   var displayError = function (textError) {
