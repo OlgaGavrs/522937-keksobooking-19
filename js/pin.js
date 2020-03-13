@@ -15,7 +15,7 @@
     var pinElement = pinTemplate.cloneNode(true);
     var pinImg = pinElement.querySelector('img');
 
-    var openCard = function () {
+    var onCardOpen = function () {
       window.card.closing();
       window.card.opening(pin);
     };
@@ -25,10 +25,10 @@
     pinImg.src = pin.author.avatar;
     pinImg.alt = pin.offer.title;
 
-    pinElement.addEventListener('click', openCard);
+    pinElement.addEventListener('click', onCardOpen);
 
     pinElement.addEventListener('keydown', function (evt) {
-      window.util.isEnterEvent(evt, openCard);
+      window.util.isEnterEvent(evt, onCardOpen);
     });
 
     return pinElement;

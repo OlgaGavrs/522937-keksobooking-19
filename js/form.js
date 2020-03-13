@@ -32,7 +32,7 @@
     blockFields(mapFilters, 'input');
   };
 
-  var verificationCapacity = function () {
+  var onCapacityChange = function () {
     var capacity = parseInt(capacitySelect.options[capacitySelect.selectedIndex].value, 10);
     var room = parseInt(roomSelect.options[roomSelect.selectedIndex].value, 10);
     if (room >= capacity) {
@@ -48,7 +48,7 @@
     }
   };
 
-  var verificationPrice = function () {
+  var onPriceChange = function () {
     var type = typeSelect.options[typeSelect.selectedIndex].value;
     price.min = HouseType[type.toUpperCase()].price;
     price.placeholder = HouseType[type.toUpperCase()].price;
@@ -78,10 +78,10 @@
 
   adForm.querySelector('#address').value = xAddress + ', ' + yAddress;
 
-  capacitySelect.addEventListener('change', verificationCapacity);
-  roomSelect.addEventListener('change', verificationCapacity);
-  typeSelect.addEventListener('change', verificationPrice);
-  price.addEventListener('change', verificationPrice);
+  capacitySelect.addEventListener('change', onCapacityChange);
+  roomSelect.addEventListener('change', onCapacityChange);
+  typeSelect.addEventListener('change', onPriceChange);
+  price.addEventListener('change', onPriceChange);
   timeinSelect.addEventListener('change', function () {
     timeoutSelect.value = timeinSelect.value;
   });
